@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bytebuilt® — Web design & development studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0b0f;
+    --bg-2: #0f1117;
+    --surface: #14161e;
+    --surface-2: #1a1d27;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-hi: rgba(255, 255, 255, 0.18);
+    --text: #eef0f6;
+    --text-2: #a4abbf;
+    --text-3: #646b80;
+    --accent: #ff4a1c;
+    --accent-2: #4f7cff;
+    --purple: #8b5cf6;
+    --lime: #c8ff3d;
+    --green: #22c55e;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  @media (pointer: coarse) { body { cursor: auto; } }
+
+  ::selection { background: var(--accent); color: var(--text); }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+
+  .container { max-width: 1440px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 120px 0; position: relative; }
+
+  /* ============ NOISE OVERLAY ============ */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  }
+
+  /* ============ CUSTOM CURSOR ============ */
+  .cur-dot, .cur-ring {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+    transform: translate3d(-50%, -50%, 0);
+    transition: width .3s var(--ease), height .3s var(--ease),
+                background .3s, border-color .3s, opacity .3s;
+  }
+  .cur-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--accent);
+  }
+  .cur-ring {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+  }
+  .cur-ring.grow {
+    width: 76px; height: 76px;
+    border-color: var(--accent);
+    background: rgba(255, 74, 28, 0.06);
+    box-shadow: 0 0 40px rgba(255, 74, 28, 0.5);
+  }
+  .cur-dot.grow { background: var(--lime); box-shadow: 0 0 24px var(--lime); width: 8px; height: 8px; }
+  @media (pointer: coarse) { .cur-dot, .cur-ring { display: none; } }
+
+  /* ============================================================
+     LOGO — e rreshtuar mirë, kubi i hapur, simbolet portokalli
+     ============================================================ */
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #eef0f6;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+  .brand-logo:hover { opacity: 0.85; }
+
+  .logo-cube {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .logo-wordmark-wrap {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  .logo-wordmark {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.045em;
+    color: #eef0f6;
+    line-height: 1;
+  }
+
+  /* Ylli portokalli — pas wordmark, pak lart */
+  .logo-star {
+    width: 10px;
+    height: 10px;
+    margin-left: 2px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Footer — logo më e madhe */
+  .brand-logo.lg .logo-cube { width: 52px; height: 52px; }
+  .brand-logo.lg .logo-wordmark { font-size: 2.2rem; }
+  .brand-logo.lg .logo-star { width: 15px; height: 15px; margin-bottom: 24px; margin-left: 4px; }
+
+  /* ============ TICKER ============ */
+  .ticker {
+    background: #05060a;
+    color: var(--text-2);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 0;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    z-index: 10;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 56px;
+    white-space: nowrap;
+    animation: tick 45s linear infinite;
+    width: max-content;
+  }
+  .ticker-track span {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+  }
+  .ticker-track span::after { content: '◆'; color: var(--accent); }
+  @keyframes tick { to { transform: translateX(-50%); } }
+
+  /* ============ NAV ============ */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: rgba(10, 11, 15, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .nav.scrolled { background: rgba(10, 11, 15, 0.92); }
+  .nav-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 16px 32px;
+    gap: 32px;
+  }
+  .nav-menu {
+    display: flex;
+    gap: 32px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+    list-style: none;
+  }
+  .nav-menu a { padding: 4px 0; transition: color 0.2s; }
+  .nav-menu a:hover { color: var(--accent); }
+  .nav-menu a sup { font-size: 0.55rem; color: var(--text-3); margin-left: 2px; }
+  .nav-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .nav-actions a { color: var(--text-2); transition: color 0.2s; }
+  .nav-actions a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 8px 18px !important;
+    border-radius: 99px;
+    transition: all 0.3s var(--ease);
+  }
+  .nav-cta:hover { background: var(--lime); color: var(--bg) !important; }
+  .burger { display: none; flex-direction: column; gap: 4px; width: 32px; height: 32px; align-items: center; justify-content: center; }
+  .burger span { width: 18px; height: 1.5px; background: var(--text); transition: all 0.3s; }
+
+  /* ============ HERO ============ */
+  .hero { padding: 80px 0 40px; position: relative; overflow: hidden; }
+  .hero-glow {
+    position: absolute;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    width: 1200px; height: 800px;
+    background: radial-gradient(ellipse at center, rgba(79,124,255,0.15), transparent 60%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+  .hero-glow::after {
+    content: '';
+    position: absolute;
+    bottom: -40%; right: -10%;
+    width: 700px; height: 700px;
+    background: radial-gradient(ellipse, rgba(255,74,28,0.12), transparent 60%);
+    filter: blur(60px);
+  }
+  .hero-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 0 0 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    position: relative;
+    z-index: 1;
+  }
+  .hero-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .hero-meta div strong { font-weight: 500; color: var(--text); }
+  .hero-meta .live::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--lime);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 12px var(--lime);
+    animation: blink 2s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0.4; } }
+  .hero-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(3rem, 11vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin-bottom: 56px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title .line { display: block; overflow: hidden; }
+  .hero-title .line > span {
+    display: inline-block;
+    transform: translateY(100%);
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero-title.ready .line > span { transform: translateY(0); }
+  .hero-title .line:nth-child(2) > span { transition-delay: 0.1s; }
+  .hero-title .line:nth-child(3) > span { transition-delay: 0.2s; }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+  .hero-title em::after {
+    content: '';
+    position: absolute;
+    bottom: 0.08em;
+    left: 0;
+    width: 0;
+    height: 0.06em;
+    background: var(--accent);
+    transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.9s;
+  }
+  .hero-title.ready em::after { width: 100%; }
+  .hero-bottom {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    align-items: end;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-copy {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--text-2);
+    max-width: 500px;
+  }
+  .hero-copy strong { color: var(--text); font-weight: 500; }
+  .hero-actions { display: flex; flex-direction: column; gap: 4px; }
+  .action-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: padding 0.3s, color 0.3s, border-color 0.3s;
+    text-align: left;
+  }
+  .action-btn::after { content: '→'; transition: transform 0.3s; }
+  .action-btn:hover {
+    padding-left: 12px;
+    padding-right: 12px;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .action-btn:hover::after { transform: translateX(4px); }
+  .hero-index {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-3);
+    line-height: 1.9;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+  .hero-index strong {
+    color: var(--text);
+    font-weight: 500;
+    display: inline-block;
+    min-width: 70px;
+    font-family: var(--mono);
+  }
+
+  /* HERO ART */
+  .hero-art {
+    position: relative;
+    margin-top: 56px;
+    aspect-ratio: 21/9;
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    z-index: 1;
+  }
+  .hero-art::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .hero-art::after {
+    content: '';
+    position: absolute;
+    top: -30%; right: 20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,74,28,0.2), transparent 60%);
+    filter: blur(40px);
+    z-index: 0;
+  }
+  .hero-art-col {
+    border-right: 1px solid var(--line);
+    padding: 32px;
+    color: var(--text);
+    position: relative;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 3;
+  }
+  .hero-art-col:last-child { border-right: none; }
+  .hero-art-col > span:first-child { color: var(--text-3); }
+  .hero-art-col > span:last-child { color: var(--text-3); }
+  .hero-art-col .big {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.6vw, 3.2rem);
+    text-transform: none;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1;
+    font-weight: 400;
+  }
+  .hero-art-col .big em { color: var(--accent); font-style: italic; }
+  .hero-bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 30%;
+    background: var(--accent);
+    box-shadow: 0 0 24px var(--accent);
+    animation: slideBar 8s ease-in-out infinite alternate;
+    z-index: 4;
+  }
+  @keyframes slideBar { from { width: 15%; } to { width: 65%; } }
+
+  /* ============ SEC HEAD ============ */
+  .sec-head {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    margin-bottom: 72px;
+    align-items: start;
+  }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+  }
+  .sec-num::before { content: '⌗ '; color: var(--accent); }
+  .sec-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 4.6vw, 3.8rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+  }
+  .sec-title em { font-style: italic; color: var(--accent); }
+
+  /* ============ SERVICES ============ */
+  .services-table { border-top: 1px solid var(--line); }
+  .service-row {
+    display: grid;
+    grid-template-columns: 60px 1.2fr 2fr 1fr 40px;
+    gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+    transition: background 0.4s var(--ease), padding 0.4s var(--ease);
+    position: relative;
+    cursor: pointer;
+  }
+  .service-row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255,74,28,0.1), transparent);
+    transition: width 0.5s var(--ease);
+    pointer-events: none;
+  }
+  .service-row:hover { padding-left: 24px; padding-right: 24px; }
+  .service-row:hover::before { width: 100%; }
+  .service-row:hover .s-title { color: var(--accent); }
+  .service-row:hover .s-arrow { color: var(--accent); transform: translateX(6px); }
+  .service-row:hover .s-tag { border-color: var(--accent); color: var(--accent); }
+  .s-num { font-family: var(--mono); font-size: 0.78rem; color: var(--text-3); }
+  .s-title {
+    font-family: var(--serif);
+    font-size: 1.65rem;
+    letter-spacing: -0.02em;
+    transition: color 0.3s;
+  }
+  .s-desc { color: var(--text-2); font-size: 0.9rem; }
+  .s-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    border: 1px solid var(--line-hi);
+    padding: 4px 12px;
+    border-radius: 99px;
+    justify-self: end;
+    transition: all 0.3s;
+  }
+  .s-arrow { font-family: var(--mono); font-size: 1.2rem; color: var(--text-3); transition: all 0.3s; }
+
+  /* ============ WORK ============ */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+  }
+  .work {
+    grid-column: span 6;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.5s var(--ease);
+  }
+  .work:hover {
+    transform: translateY(-6px);
+    border-color: var(--line-hi);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.9), 0 0 40px -20px rgba(255,74,28,0.3);
+  }
+  .work:nth-child(1) { grid-column: span 7; }
+  .work:nth-child(2) { grid-column: span 5; }
+  .work:nth-child(3) { grid-column: span 5; }
+  .work:nth-child(4) { grid-column: span 7; }
+  .work-thumb {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: var(--bg-2);
+    position: relative;
+  }
+  .work-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1s var(--ease), filter 0.6s;
+    filter: saturate(0.7) contrast(1.05);
+  }
+  .work:hover .work-thumb img { transform: scale(1.06); filter: saturate(1) contrast(1); }
+  .work-thumb::after {
+    content: attr(data-index);
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text);
+    background: rgba(10, 11, 15, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+    z-index: 2;
+  }
+  .work-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 26px;
+    border-top: 1px solid var(--line);
+    gap: 16px;
+  }
+  .work-info h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.55rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .work:hover .work-info h3 { color: var(--accent); }
+  .work-info h3 em { font-style: italic; }
+  .work-cat {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+  }
+
+  /* ============ PROCESS ============ */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .process-step {
+    padding: 40px 28px 44px;
+    border-right: 1px solid var(--line);
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: pointer;
+  }
+  .process-step:last-child { border-right: none; }
+  .process-step::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 24px var(--accent);
+    transition: width 0.6s var(--ease);
+  }
+  .process-step:hover { background: rgba(255,74,28,0.03); }
+  .process-step:hover::before { width: 100%; }
+  .process-step:hover .ps-num { color: var(--accent); }
+  .process-step:hover .ps-title { color: var(--accent); }
+  .ps-num {
+    font-family: var(--mono);
+    font-size: 3.2rem;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--text-3);
+    transition: color 0.4s;
+    line-height: 1;
+  }
+  .ps-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    margin-top: 16px;
+  }
+  .ps-title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    transition: color 0.4s;
+  }
+  .ps-body { color: var(--text-2); font-size: 0.88rem; }
+
+  /* ============ PRICING ============ */
+  .pricing-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 80px;
+  }
+  .pricing-head .sec-num { display: inline-block; margin-bottom: 20px; }
+  .pricing-head h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+  .pricing-head h2 em { font-style: italic; color: var(--accent); }
+  .pricing-head p {
+    color: var(--text-2);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+  .plan {
+    position: relative;
+    background: linear-gradient(180deg, #131722, #0e111a);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 40px 32px 36px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s var(--ease);
+  }
+  .plan:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.9);
+  }
+  .plan.featured {
+    background: linear-gradient(180deg, #1e1b3a, #14122a);
+    border-color: rgba(255, 74, 28, 0.55);
+    box-shadow: 0 30px 80px -30px rgba(255, 74, 28, 0.4), 0 0 0 1px rgba(255, 74, 28, 0.15);
+    transform: scale(1.03);
+  }
+  .plan.featured:hover {
+    transform: scale(1.03) translateY(-4px);
+    border-color: rgba(255, 74, 28, 0.8);
+  }
+  .plan.featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: radial-gradient(ellipse at top, rgba(255, 74, 28, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .plan > * { position: relative; z-index: 1; }
+  .plan-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--accent), #ff7038);
+    color: white;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 99px;
+    box-shadow: 0 10px 26px -8px rgba(255, 74, 28, 0.7);
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .plan-name em { font-style: italic; color: var(--accent); }
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .plan-price .amount {
+    font-family: var(--sans);
+    font-size: clamp(2.2rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .plan-price .period {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+  .plan-desc {
+    color: var(--text-2);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+    margin-bottom: 32px;
+    font-size: 0.92rem;
+  }
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .plan-features li .check {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--green);
+    stroke-width: 3;
+  }
+  .plan.featured .plan-features li .check { color: #ff7038; }
+  .plan-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: all 0.3s var(--ease);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .plan-cta:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  .plan.featured .plan-cta {
+    background: linear-gradient(135deg, var(--accent), #ff7038);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 12px 30px -10px rgba(255, 74, 28, 0.6);
+  }
+  .plan.featured .plan-cta:hover {
+    box-shadow: 0 20px 40px -10px rgba(255, 74, 28, 0.8);
+    transform: translateY(-2px);
+  }
+
+  /* ============ ADD-ONS ============ */
+  .addons {
+    max-width: 1200px;
+    margin: 80px auto 0;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+  .addons-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .addons-head h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+  }
+  .addons-head p {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+  }
+  .addons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .addon {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: all 0.3s var(--ease);
+  }
+  .addon:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--line-hi);
+  }
+  .addon-name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .addon-price {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ QUOTES ============ */
+  .quotes {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 72px;
+    align-items: start;
+  }
+  .quote-main {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-style: italic;
+    position: relative;
+    padding-left: 44px;
+  }
+  .quote-main::before {
+    content: '"';
+    position: absolute;
+    top: -24px; left: 0;
+    font-size: 6rem;
+    color: var(--accent);
+    line-height: 1;
+    font-family: var(--serif);
+    opacity: 0.9;
+  }
+  .quote-author {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .quote-avatar {
+    width: 48px; height: 48px;
+    background: var(--surface-2);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    border-radius: 50%;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--line-hi);
+  }
+  .quote-author strong { display: block; font-size: 0.95rem; font-weight: 500; }
+  .quote-author span {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-3);
+    font-family: var(--mono);
+  }
+  .quote-side { display: flex; flex-direction: column; gap: 28px; }
+  .quote-side-item { padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .quote-side-item:last-child { border-bottom: none; }
+  .quote-side-item p {
+    font-size: 0.92rem;
+    color: var(--text-2);
+    margin-bottom: 12px;
+    line-height: 1.65;
+  }
+  .quote-side-item strong {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    font-weight: 400;
+  }
+  .quote-side-item strong::before { content: '— '; color: var(--accent); }
+
+  /* ============ FAQ ============ */
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-q {
+    width: 100%;
+    padding: 32px 0;
+    display: grid;
+    grid-template-columns: 60px 1fr 40px;
+    gap: 24px;
+    align-items: center;
+    text-align: left;
+    transition: padding 0.3s, color 0.3s;
+  }
+  .faq-q:hover { padding-left: 16px; color: var(--accent); }
+  .faq-q .n {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .faq-q .t {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .faq-q .sign {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-3);
+    text-align: right;
+    transition: transform 0.4s var(--ease), color 0.3s;
+  }
+  .faq-item.open .faq-q .sign { transform: rotate(45deg); color: var(--accent); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s var(--ease), padding 0.5s;
+  }
+  .faq-item.open .faq-a { max-height: 300px; padding-bottom: 32px; }
+  .faq-a-inner {
+    margin-left: 84px;
+    max-width: 640px;
+    color: var(--text-2);
+    font-size: 0.94rem;
+    line-height: 1.7;
+  }
+
+  /* ============ CTA ============ */
+  .cta {
+    background:
+      radial-gradient(circle at 25% 50%, rgba(255,74,28,0.12), transparent 55%),
+      radial-gradient(circle at 75% 50%, rgba(79,124,255,0.1), transparent 55%),
+      var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 120px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+    pointer-events: none;
+  }
+  .cta-inner { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; }
+  .cta-meta {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    margin-bottom: 32px;
+  }
+  .cta-meta::before { content: '◉ '; color: var(--lime); }
+  .cta-title {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6.5vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+  .cta-title em { font-style: italic; color: var(--accent); }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .cta-btn {
+    padding: 20px 36px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border: 1px solid var(--line-hi);
+    border-radius: 99px;
+    transition: all 0.35s var(--ease);
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cta-btn::after { content: '→'; }
+  .cta-btn:hover {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--bg);
+    transform: translateY(-3px);
+  }
+  .cta-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 20px 40px -15px rgba(255,74,28,0.5);
+  }
+  .cta-btn.primary:hover {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: var(--bg);
+    box-shadow: 0 20px 40px -15px rgba(200,255,61,0.5);
+  }
+
+  /* ============ HUGE MARQUEE ============ */
+  .marquee-huge {
+    padding: 40px 0;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--serif);
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, transparent, rgba(255,74,28,0.03));
+  }
+  .marquee-huge-track {
+    display: flex;
+    gap: 60px;
+    white-space: nowrap;
+    animation: tick 32s linear infinite;
+    width: max-content;
+    align-items: center;
+  }
+  .marquee-huge-track span {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+  .marquee-huge-track span em { font-style: italic; color: var(--accent); }
+  .marquee-huge-track span::after {
+    content: '✱';
+    color: var(--accent);
+    font-size: 0.55em;
+  }
+
+  /* ============ FOOTER ============ */
+  footer { padding: 72px 0 32px; border-top: 1px solid var(--line); }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 56px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--line);
+  }
+  .foot-about {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    max-width: 340px;
+    line-height: 1.65;
+    margin-top: 20px;
+  }
+  .foot-col h5 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-3);
+    font-weight: 400;
+    margin-bottom: 22px;
+  }
+  .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .foot-col a {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    transition: color 0.2s, padding-left 0.3s;
+    display: inline-block;
+  }
+  .foot-col a:hover { color: var(--accent); padding-left: 4px; }
+  .foot-bottom {
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+  }
+  .foot-bottom-links { display: flex; gap: 24px; }
+  .foot-bottom-links a:hover { color: var(--accent); }
+
+  /* ============ REVEAL ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1080px) {
+    .hero-meta { grid-template-columns: 1fr 1fr; }
+    .hero-bottom { grid-template-columns: 1fr; gap: 40px; }
+    .hero-index { text-align: left; }
+    .sec-head { grid-template-columns: 1fr; gap: 16px; }
+    .service-row { grid-template-columns: 40px 1fr 40px; }
+    .s-desc, .s-tag { display: none; }
+    .work-grid { grid-template-columns: 1fr; }
+    .work { grid-column: span 1 !important; }
+    .process { grid-template-columns: repeat(2, 1fr); }
+    .process-step:nth-child(2) { border-right: none; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+    .plan.featured { transform: scale(1); }
+    .plan.featured:hover { transform: translateY(-4px); }
+    .addons-grid { grid-template-columns: repeat(2, 1fr); }
+    .quotes { grid-template-columns: 1fr; gap: 56px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .faq-a-inner { margin-left: 0; }
+    .faq-q { grid-template-columns: 40px 1fr 30px; gap: 16px; }
+  }
+  @media (max-width: 780px) {
+    section { padding: 72px 0; }
+    .nav-inner { grid-template-columns: 1fr auto; padding: 14px 20px; }
+    .nav-menu { display: none; }
+    .nav-actions { display: none; }
+    .burger { display: flex; }
+    .nav-menu.open {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 60px;
+      left: 0; right: 0;
+      background: rgba(10, 11, 15, 0.97);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 28px;
+      gap: 22px;
+      font-size: 0.95rem;
+    }
+    .container { padding: 0 20px; }
+    .hero { padding: 56px 0 24px; }
+    .hero-art { aspect-ratio: auto; grid-template-columns: 1fr; }
+    .hero-art-col { border-right: none; border-bottom: 1px solid var(--line); min-height: 110px; padding: 24px; }
+    .hero-art-col:last-child { border-bottom: none; }
+    .process { grid-template-columns: 1fr; }
+    .process-step { border-right: none; border-bottom: 1px solid var(--line); }
+    .process-step:last-child { border-bottom: none; }
+    .plan { padding: 32px 24px 28px; }
+    .addons { padding: 28px 20px; }
+    .addons-grid { grid-template-columns: 1fr; }
+    .cta { padding: 72px 24px; }
+    .foot-grid { grid-template-columns: 1fr; gap: 40px; }
+    .s-title { font-size: 1.2rem; }
+    .marquee-huge { font-size: 2.2rem; }
+    .brand-logo.lg .logo-cube { width: 42px; height: 42px; }
+    .brand-logo.lg .logo-wordmark { font-size: 1.7rem; }
+    .brand-logo.lg .logo-star { width: 12px; height: 12px; margin-bottom: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    .hero-title .line > span { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ CURSOR ============ -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>Booking Q1 2025</span>
+    <span>Est. 2018 — Tirana / Remote</span>
+    <span>Currently: 4 open slots</span>
+    <span>Avg. reply time: 2h</span>
+    <span>Booking Q1 2025</span>
+    <span>Est. 2018 — Tirana / Remote</span>
+    <span>Currently: 4 open slots</span>
+    <span>Avg. reply time: 2h</span>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="brand-logo" aria-label="bytebuilt home">
+      <svg class="logo-cube" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Kontura hexagon — e hapur (e bardhë) -->
+        <path d="M 50 6 L 88 28 L 88 72 L 50 94 L 12 72 L 12 28 Z"
+              fill="none" stroke="#eef0f6" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+        <!-- Vija "Y" e brendshme — e hapur -->
+        <path d="M 50 50 L 12 28 M 50 50 L 88 28 M 50 50 L 50 94"
+              fill="none" stroke="#eef0f6" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+        <!-- Simboli > në faqen e sipërme — PORTOKALLI -->
+        <path d="M 42 22 L 58 30 L 42 38"
+              fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Simboli < në faqen e majtë — PORTOKALLI -->
+        <path d="M 32 58 L 20 66 L 32 74"
+              fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Simboli > në faqen e djathtë — PORTOKALLI -->
+        <path d="M 64 58 L 76 66 L 64 74"
+              fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-wordmark-wrap">
+        <span class="logo-wordmark">bytebuilt</span>
+        <svg class="logo-star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M 12 0 C 12 7.5 12 7.5 24 12 C 12 16.5 12 16.5 12 24 C 12 16.5 12 16.5 0 12 C 12 7.5 12 7.5 12 0 Z" fill="#ff4a1c"/>
+        </svg>
+      </span>
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#services">Services<sup>06</sup></a></li>
+      <li><a href="#work">Work<sup>12</sup></a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="nav-cta">Start a project</a>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="container">
+    <div class="hero-meta reveal">
+      <div><span>Studio</span><strong>bytebuilt®</strong></div>
+      <div><span>Founded</span><strong>2018, Tirana</strong></div>
+      <div><span>Practice</span><strong>Web · Brand · Product</strong></div>
+      <div class="live"><span>Availability</span><strong>Q1 2025 — 4 slots</strong></div>
+    </div>
+
+    <h1 class="hero-title" id="heroTitle">
+      <span class="line"><span>Websites for</span></span>
+      <span class="line"><span>businesses that</span></span>
+      <span class="line"><span>refuse to be <em>forgettable.</em></span></span>
+    </h1>
+
+    <div class="hero-bottom">
+      <p class="hero-copy reveal">
+        bytebuilt is a small studio crafting considered digital work for brands
+        that care about the craft. <strong>No templates, no shortcuts, no juniors.</strong>
+        Just senior designers and engineers, doing the work properly.
+      </p>
+
+      <div class="hero-actions reveal">
+        <a href="#contact" class="action-btn">Book an intro call</a>
+        <a href="#work" class="action-btn">View recent work</a>
+        <a href="#pricing" class="action-btn">See pricing</a>
+      </div>
+
+      <div class="hero-index reveal">
+        <div><strong>87</strong> Projects shipped</div>
+        <div><strong>11 yrs</strong> Avg. experience</div>
+        <div><strong>94%</strong> Client retention</div>
+        <div><strong>3.4×</strong> Avg. ROI uplift</div>
+      </div>
+    </div>
+
+    <div class="hero-art reveal" id="heroArt">
+      <div class="hero-art-col">
+        <span>Now building</span>
+        <div class="big">Precision<br>over <em>volume.</em></div>
+        <span>↳ See selected projects below</span>
+      </div>
+      <div class="hero-art-col">
+        <span>Focus 2025</span>
+        <div>
+          Editorial websites<br>
+          Commerce<br>
+          Design systems<br>
+          Product UI
+        </div>
+        <span>⌗ 04 disciplines</span>
+      </div>
+      <div class="hero-art-col">
+        <span>Signals</span>
+        <div style="font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.02em;">
+          <div style="color: var(--lime);">● Accepting</div>
+          <div style="color: var(--accent); margin-top: 10px;">◐ In progress ×3</div>
+          <div style="color: rgba(238,240,246,0.4); margin-top: 10px;">○ Paused</div>
+        </div>
+        <span>Updated 4h ago</span>
+      </div>
+      <div class="hero-bar" id="heroBar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-num">Services / 01</div>
+      <h2 class="sec-title">Six things we do <em>exceptionally</em> well.</h2>
+    </div>
+
+    <div class="services-table reveal">
+      <div class="service-row">
+        <span class="s-num">01</span>
+        <span class="s-title">Web design</span>
+        <span class="s-desc">Editorial layouts, systems thinking, and interfaces designed to age well. Figma-first, user-tested.</span>
+        <span class="s-tag">Core</span>
+        <span class="s-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <span class="s-num">02</span>
+        <span class="s-title">Development</span>
+        <span class="s-desc">Hand-written HTML, CSS, and JS. No bloat, no plugin stacks. Fast by default, accessible by habit.</span>
+        <span class="s-tag">Core</span>
+        <span class="s-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <span class="s-num">03</span>
+        <span class="s-title">E-commerce</span>
+        <span class="s-desc">Storefronts that convert and feel good to use. Shopify, headless, or fully custom builds.</span>
+        <span class="s-tag">Commerce</span>
+        <span class="s-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <span class="s-num">04</span>
+        <span class="s-title">Brand identity</span>
+        <span class="s-desc">Logos, typographic systems, colour, and guidelines that hold up across every touchpoint.</span>
+        <span class="s-tag">Brand</span>
+        <span class="s-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <span class="s-num">05</span>
+        <span class="s-title">SEO & content</span>
+        <span class="s-desc">Technical SEO, editorial strategy, and reporting that people actually read. No dark patterns.</span>
+        <span class="s-tag">Growth</span>
+        <span class="s-arrow">→</span>
+      </div>
+      <div class="service-row">
+        <span class="s-num">06</span>
+        <span class="s-title">Care & maintenance</span>
+        <span class="s-desc">Monthly retainers covering updates, monitoring, and steady iteration. Partner, not vendor.</span>
+        <span class="s-tag">Retainer</span>
+        <span class="s-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section id="work">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-num">Selected work / 02</div>
+      <h2 class="sec-title">A few pieces we're <em>proud of.</em></h2>
+    </div>
+
+    <div class="work-grid">
+      <a href="#" class="work reveal">
+        <div class="work-thumb" data-index="①">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&q=80&auto=format&fit=crop" alt="">
+        </div>
+        <div class="work-info">
+          <div>
+            <h3>Northwind <em>Capital</em></h3>
+            <span class="work-cat">Fintech · Marketing + Dashboard</span>
+          </div>
+          <span class="work-cat">2024</span>
+        </div>
+      </a>
+
+      <a href="#" class="work reveal">
+        <div class="work-thumb" data-index="②">
+          <img src="https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=1200&q=80&auto=format&fit=crop" alt="">
+        </div>
+        <div class="work-info">
+          <div>
+            <h3>Atlas <em>Apparel</em></h3>
+            <span class="work-cat">E-commerce · Headless Shopify</span>
+          </div>
+          <span class="work-cat">2024</span>
+        </div>
+      </a>
+
+      <a href="#" class="work reveal">
+        <div class="work-thumb" data-index="③">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80&auto=format&fit=crop" alt="">
+        </div>
+        <div class="work-info">
+          <div>
+            <h3>Pulse <em>Analytics</em></h3>
+            <span class="work-cat">SaaS · Product marketing</span>
+          </div>
+          <span class="work-cat">2023</span>
+        </div>
+      </a>
+
+      <a href="#" class="work reveal">
+        <div class="work-thumb" data-index="④">
+          <img src="https://images.unsplash.com/photo-1487014679447-9f8336841d58?w=1400&q=80&auto=format&fit=crop" alt="">
+        </div>
+        <div class="work-info">
+          <div>
+            <h3>Maison <em>Noir</em></h3>
+            <span class="work-cat">Hospitality · Booking platform</span>
+          </div>
+          <span class="work-cat">2023</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="process">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-num">Process / 03</div>
+      <h2 class="sec-title">Four steps, <em>no theatre.</em></h2>
+    </div>
+
+    <div class="process reveal">
+      <div class="process-step">
+        <div>
+          <div class="ps-num">01</div>
+          <div class="ps-label">Week 1</div>
+        </div>
+        <div>
+          <div class="ps-title">Discovery</div>
+          <p class="ps-body">A working session to understand your business, audience, and where the site needs to move a number.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div>
+          <div class="ps-num">02</div>
+          <div class="ps-label">Week 2–3</div>
+        </div>
+        <div>
+          <div class="ps-title">Design</div>
+          <p class="ps-body">You see progress from day one. Weekly reviews, honest feedback, no big reveals at the end.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div>
+          <div class="ps-num">03</div>
+          <div class="ps-label">Week 3–4</div>
+        </div>
+        <div>
+          <div class="ps-title">Build</div>
+          <p class="ps-body">Clean code, tested across devices. Documentation your team can actually read.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div>
+          <div class="ps-num">04</div>
+          <div class="ps-label">Week 5+</div>
+        </div>
+        <div>
+          <div class="ps-title">Launch & iterate</div>
+          <p class="ps-body">We stay on after go-live. Measure, tweak, improve. The site keeps getting better.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-head reveal">
+      <div class="sec-num">Pricing / 04</div>
+      <h2>Clear packages, <em>no surprises.</em></h2>
+      <p>One-time build cost. No hidden fees, no subscriptions, no fluff. Every package includes hosting setup, SSL, and 30 days of free support.</p>
+    </div>
+
+    <div class="pricing-grid reveal">
+
+      <!-- STANDARD — MOST POPULAR (Featured) -->
+      <div class="plan featured">
+        <div class="plan-badge">Most Popular</div>
+        <h3 class="plan-name">Standard</h3>
+        <div class="plan-price">
+          <span class="amount">€200</span>
+          <span class="period">one-time</span>
+        </div>
+        <p class="plan-desc">Perfect for small businesses that need a professional presence online — fast.</p>
+        <ul class="plan-features">
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Standard custom design</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mobile responsive</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Slider Revolution</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Business logo design</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 2+ webmail addresses</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 1 GB storage space</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SEO + 10+ pages</li>
+        </ul>
+        <a href="#contact" class="plan-cta">Get Started</a>
+      </div>
+
+      <!-- E-COMMERCE -->
+      <div class="plan">
+        <h3 class="plan-name">E-<em>Commerce</em></h3>
+        <div class="plan-price">
+          <span class="amount">€400</span>
+          <span class="period">one-time</span>
+        </div>
+        <p class="plan-desc">Full online store — products, payments, orders, and everything needed to sell online.</p>
+        <ul class="plan-features">
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> E-commerce design</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Multiple products</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mobile responsive</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Slider Revolution</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Business logo design</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 2+ webmail addresses</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> SEO + 1 GB storage</li>
+        </ul>
+        <a href="#contact" class="plan-cta">Get Started</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan">
+        <h3 class="plan-name">Pro <em>Custom</em></h3>
+        <div class="plan-price">
+          <span class="amount">€500</span>
+          <span class="period">one-time</span>
+        </div>
+        <p class="plan-desc">For businesses that need something bigger — portals, dashboards, multi-language, integrations.</p>
+        <ul class="plan-features">
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited pages</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Admin dashboard</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Multi-language support</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> API integrations</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Advanced SEO</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+          <li><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Dedicated project manager</li>
+        </ul>
+        <a href="#contact" class="plan-cta">Get a Quote</a>
+      </div>
+
+    </div>
+
+    <div class="addons reveal">
+      <div class="addons-head">
+        <h3>Add-ons & <em style="font-style: italic; color: var(--accent);">extras</em></h3>
+        <p>Mix & match with any package</p>
+      </div>
+      <div class="addons-grid">
+        <div class="addon"><div class="addon-name">Extra page</div><div class="addon-price">€40 each</div></div>
+        <div class="addon"><div class="addon-name">Extra product</div><div class="addon-price">€3 each</div></div>
+        <div class="addon"><div class="addon-name">Blog setup + 3 posts</div><div class="addon-price">€150</div></div>
+        <div class="addon"><div class="addon-name">Google Maps integration</div><div class="addon-price">€30</div></div>
+        <div class="addon"><div class="addon-name">WhatsApp / chat widget</div><div class="addon-price">€50</div></div>
+        <div class="addon"><div class="addon-name">Booking / reservation system</div><div class="addon-price">€250+</div></div>
+        <div class="addon"><div class="addon-name">Monthly maintenance</div><div class="addon-price">from €30/mo</div></div>
+        <div class="addon"><div class="addon-name">Copywriting</div><div class="addon-price">€60 / page</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTES ============ -->
+<section>
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-num">Client words / 05</div>
+      <h2 class="sec-title">Straight from the <em>inbox.</em></h2>
+    </div>
+
+    <div class="quotes">
+      <div class="quote-main reveal">
+        bytebuilt shipped our new site in three weeks and conversion is up 40%. They pushed back on ideas that weren't working — which we appreciated more than the compliments.
+        <div class="quote-author">
+          <div class="quote-avatar">SM</div>
+          <div>
+            <strong>Sarah Mitchell</strong>
+            <span>CEO, Atlas Apparel</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-side reveal">
+        <div class="quote-side-item">
+          <p>I've worked with three agencies. bytebuilt is the first that felt like a partner instead of a vendor.</p>
+          <strong>Marcus Chen, Pulse Analytics</strong>
+        </div>
+        <div class="quote-side-item">
+          <p>The design is beautiful, but what impressed us most was the performance. Load time went from 4.2s to under 400ms.</p>
+          <strong>David Okafor, Summit Estates</strong>
+        </div>
+        <div class="quote-side-item">
+          <p>They asked better questions than our internal team. The work is precise, thoughtful, and holds up a year later.</p>
+          <strong>Elena Rossi, Northwind Capital</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-num">FAQ / 06</div>
+      <h2 class="sec-title">Questions, <em>answered.</em></h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item open">
+        <button class="faq-q">
+          <span class="n">01 / Q</span>
+          <span class="t">How long does a project usually take?</span>
+          <span class="sign">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">A typical Standard site takes 1–2 weeks from kickoff to launch. E-commerce runs 2–4 weeks. Pro Custom depends on the scope — usually 4+ weeks. We'll give you a real timeline after the intro call, not a sales estimate.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="n">02 / Q</span>
+          <span class="t">Who owns the website and code?</span>
+          <span class="sign">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">You do. Full ownership of design files, code, and content. We hand over repo access and documentation at the end of the project.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="n">03 / Q</span>
+          <span class="t">Do you offer ongoing support?</span>
+          <span class="sign">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Yes — monthly retainers from €30/month cover updates, monitoring, content changes, and small improvements. We also offer ad-hoc support if you'd prefer.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="n">04 / Q</span>
+          <span class="t">Can you redesign an existing site?</span>
+          <span class="sign">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Redesigns are about half of what we do. We'll audit your current site, decide what to keep, and rebuild the rest — usually without downtime.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">
+          <span class="n">05 / Q</span>
+          <span class="t">How do payments work?</span>
+          <span class="sign">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner">Simple: 50% deposit to start, 50% on delivery. For larger projects we split into milestones. Bank transfer, PayPal, or card — whichever works for you.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<div class="cta" id="contact">
+  <div class="cta-inner reveal">
+    <div class="cta-meta">Ready when you are — booking Q1 2025</div>
+    <h2 class="cta-title">Let's build something <em>worth remembering.</em></h2>
+    <div class="cta-actions">
+      <a href="mailto:bytebuiltweb@gmail.com" class="cta-btn primary">Email bytebuiltweb@gmail.com</a>
+      <a href="https://instagram.com/bytebulit.comp" target="_blank" rel="noopener" class="cta-btn">Message on Instagram</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HUGE MARQUEE ============ -->
+<div class="marquee-huge">
+  <div class="marquee-huge-track">
+    <span>Design <em>·</em> Build <em>·</em> Launch <em>·</em> Iterate</span>
+    <span>Design <em>·</em> Build <em>·</em> Launch <em>·</em> Iterate</span>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a href="#" class="brand-logo lg" aria-label="bytebuilt home">
+          <svg class="logo-cube" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M 50 6 L 88 28 L 88 72 L 50 94 L 12 72 L 12 28 Z"
+                  fill="none" stroke="#eef0f6" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M 50 50 L 12 28 M 50 50 L 88 28 M 50 50 L 50 94"
+                  fill="none" stroke="#eef0f6" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M 42 22 L 58 30 L 42 38"
+                  fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 32 58 L 20 66 L 32 74"
+                  fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 64 58 L 76 66 L 64 74"
+                  fill="none" stroke="#ff4a1c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="logo-wordmark-wrap">
+            <span class="logo-wordmark">bytebuilt</span>
+            <svg class="logo-star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 0 C 12 7.5 12 7.5 24 12 C 12 16.5 12 16.5 12 24 C 12 16.5 12 16.5 0 12 C 12 7.5 12 7.5 12 0 Z" fill="#ff4a1c"/>
+            </svg>
+          </span>
+        </a>
+        <p class="foot-about">A small studio crafting considered digital work. Founded 2018, Tirana. Working remotely with clients worldwide.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#">Web design</a></li>
+          <li><a href="#">Development</a></li>
+          <li><a href="#">E-commerce</a></li>
+          <li><a href="#">Brand identity</a></li>
+          <li><a href="#">SEO & content</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Selected work</a></li>
+          <li><a href="#">Journal</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="mailto:bytebuiltweb@gmail.com">bytebuiltweb@gmail.com</a></li>
+          <li><a href="https://instagram.com/bytebulit.comp" target="_blank" rel="noopener">@bytebulit.comp</a></li>
+          <li><a href="#">Tirana, Albania</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2025 bytebuilt® — All rights reserved.</span>
+      <div class="foot-bottom-links">
+        <a href="https://instagram.com/bytebulit.comp" target="_blank" rel="noopener">Instagram</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  const dot = document.getElementById('curDot');
+  const ring = document.getElementById('curRing');
+  const isTouch = matchMedia('(pointer: coarse)').matches;
+
+  if (!isTouch) {
+    let mx = innerWidth / 2, my = innerHeight / 2;
+    let rx = mx, ry = my;
+
+    window.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+    }, { passive: true });
+
+    (function loop() {
+      rx += (mx - rx) * 0.32;
+      ry += (my - ry) * 0.32;
+      if (Math.abs(mx - rx) < 0.05) rx = mx;
+      if (Math.abs(my - ry) < 0.05) ry = my;
+      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    })();
+
+    document.querySelectorAll('a, button, .work, .service-row, .process-step, .plan, .faq-q, .addon')
+      .forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          dot.classList.add('grow');
+          ring.classList.add('grow');
+        });
+        el.addEventListener('mouseleave', () => {
+          dot.classList.remove('grow');
+          ring.classList.remove('grow');
+        });
+      });
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('heroTitle').classList.add('ready'), 200);
+  });
+
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', scrollY > 20);
+  }, { passive: true });
+
+  const burger = document.getElementById('burger');
+  const navMenu = document.getElementById('navMenu');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    navMenu.classList.toggle('open');
+  });
+  navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    burger.classList.remove('open');
+    navMenu.classList.remove('open');
+  }));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!open) item.classList.add('open');
+    });
+  });
+
+  const heroArt = document.getElementById('heroArt');
+  const heroBar = document.getElementById('heroBar');
+  const hero = document.querySelector('.hero');
+  if (!isTouch && hero && heroArt) {
+    hero.addEventListener('mousemove', e => {
+      const rect = heroArt.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+        heroBar.style.left = (x * 60) + '%';
+      }
+      const cx = (e.clientX / innerWidth - 0.5) * 6;
+      const cy = (e.clientY / innerHeight - 0.5) * 6;
+      heroArt.style.transform = `perspective(1200px) rotateY(${cx}deg) rotateX(${-cy}deg)`;
+    }, { passive: true });
+    hero.addEventListener('mouseleave', () => {
+      heroArt.style.transform = '';
+    });
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        e.preventDefault();
+        const t = document.querySelector(id);
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  console.log('%cbytebuilt® — Websites for businesses that refuse to be forgettable.',
+    'color:#ff4a1c;font-weight:800;font-size:13px;');
+})();
+</script>
+</body>
+</html>
